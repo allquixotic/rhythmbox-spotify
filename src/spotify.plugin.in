@@ -1,6 +1,6 @@
-[RB Plugin]
+[Plugin]
 Module=spotify
-IAge=1
+IAge=2
 _Name=Spotify Plugin
 _Description=Simple Spotify plugin
 Authors=Ivan Kelly <ivan@bleurgh.com

@@ -16,7 +16,7 @@
  */
 #include <rhythmbox/shell/rb-shell.h>
 #include <rhythmbox/sources/rb-browser-source.h>
-#include <rhythmbox/shell/rb-plugin.h>
+#include <rhythmbox/plugins/rb-plugin-macros.h>
 
 G_BEGIN_DECLS
 

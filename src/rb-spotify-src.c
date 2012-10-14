@@ -53,7 +53,7 @@
 
 #include <rhythmbox/shell/rb-shell.h>
 #include <rhythmbox/sources/rb-browser-source.h>
-#include <rhythmbox/shell/rb-plugin.h>
+#include <rhythmbox/plugins/rb-plugin-macros.h>
 #include <rhythmbox/lib/rb-debug.h>
 
 #include "rb-spotify-source.h"
@@ -159,7 +159,7 @@ extern pthread_cond_t g_notify_cond;
 int spcb_music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames);
 
 void
-rbspotifysrc_set_plugin (RBPlugin *plugin)
+rbspotifysrc_set_plugin (PeasExtensionBase *plugin)
 {
 	g_assert (IS_RBSPOTIFYPLUGIN (plugin));
 	g_spotify_plugin = RBSPOTIFYPLUGIN (plugin);
@@ -167,11 +167,13 @@ rbspotifysrc_set_plugin (RBPlugin *plugin)
 
 enum
 {
+#if 0
 	PROP_0,
-	PROP_URI,
-	PROP_SESSION,
-	PROP_SEEKABLE,
-	PROP_BYTESPERREAD
+#endif
+	PROP_URI = 1,
+	PROP_SESSION = 2,
+	PROP_SEEKABLE = 3,
+	PROP_BYTESPERREAD = 4
 };
 
 static void
@@ -237,7 +239,7 @@ rbspotifysrc_init (RBSpotifySrc *src, RBSpotifySrcClass *klass)
 		);
 	src->uri = NULL;
 
-	g_object_set (G_OBJECT (src), "session", g_spotify_plugin->priv->sess, NULL);
+	g_object_set (G_OBJECT (src), "session", g_spotify_plugin->privyou->sess, NULL);
 }
 
 static void

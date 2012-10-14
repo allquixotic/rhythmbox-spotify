@@ -13,15 +13,12 @@ libspotify_la_CFLAGS = $(DEPENDENCIES_CFLAGS)
 libspotify_la_LDFLAGS = -module -avoid-version
 libspotify_la_LIBTOOLFLAGS = --tag=disable-static
 
-gtkbuilderdir = $(plugindir)
-gtkbuilder_DATA = spotify-prefs.ui
+plugin_in_files = spotify.plugin.in
 
-plugin_in_files = spotify.rb-plugin
-
-%.rb-plugin: %.rb-plugin.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
+%.plugin: %.plugin.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
 BUILT_SOURCES =							\
-	$(plugin_in_files:.rb-plugin.in=.rb-plugin) 		\
+	$(plugin_in_files:.plugin.in=.plugin) 		\
 	$(NULL)
 	
 plugin_DATA = 			\

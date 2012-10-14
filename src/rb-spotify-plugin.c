@@ -1,7 +1,9 @@
 /*
- * rb-sample-plugin.h
+ * rb-spotify-plugin.h
  * 
  * Copyright (C) 2002-2005 - Paolo Maggi
+ * Copyright (C) 2008-2009 - Ivan Kelly
+ * Copyright (C) 2012      - Sean McNamara <smcnam@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,10 +44,13 @@
 
 #include <rhythmbox/shell/rb-shell.h>
 #include <rhythmbox/lib/rb-debug.h>
-#include <rhythmbox/shell/rb-plugin.h>
+#include <rhythmbox/plugins/rb-plugin-macros.h>
 #include <rhythmbox/widgets/rb-dialog.h>
 #include <rhythmbox/lib/rb-builder-helpers.h>
+#include <rhythmbox/lib/rb-file-helpers.h>
+#if 0
 #include <rhythmbox/lib/rb-preferences.h>
+#endif
 #include <rhythmbox/sources/rb-display-page-group.h>
 
 #include "rb-spotify-plugin.h"
@@ -55,6 +60,14 @@
 
 #define CONF_SPOTIFY_USERNAME CONF_PREFIX "/spotify/username"
 #define CONF_SPOTIFY_PASSWORD CONF_PREFIX "/spotify/password"
+#define CONF_PREFIX "/apps/rhythmbox"
+#define CONF_STATE_SORTING_PREFIX CONF_PREFIX "/state/sorting/"
+#define RB_TYPE_SPOTIFY_PLUGIN	(rb_spotify_plugin_get_type ())
+#define RB_SPOTIFY_PLUGIN(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), RB_TYPE_SPOTIFY_PLUGIN, RBSpotifyPlugin))
+#define RB_SPOTIFY_PLUGIN_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), RB_TYPE_SPOTIFY_PLUGIN, RBSpotifyPluginClass))
+#define RB_IS_SPOTIFY_PLUGIN(o)	(G_TYPE_CHECK_INSTANCE_TYPE ((o), RB_TYPE_SPOTIFY_PLUGIN))
+#define RB_IS_SPOTIFY_PLUGIN_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), RB_TYPE_SPOTIFY_PLUGIN))
+#define RB_SPOTIFY_PLUGIN_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), RB_TYPE_SPOTIFY_PLUGIN, RBSpotifyPluginClass))
 
 extern const char g_appkey[];
 
@@ -72,6 +85,7 @@ audio_fifo_t g_audio_fifo;
 /**
  * The session callbacks
  */
+static void peas_gtk_configurable_iface_init (PeasGtkConfigurableInterface *iface);
 static void
 spcb_logged_in (sp_session *sess, sp_error error);
 static void
@@ -139,61 +153,73 @@ static sp_session_config spconfig =
       .application_key_size = 0, // Set in main()
       .user_agent = "testexamples", .callbacks = &session_callbacks, NULL, };
 
-G_MODULE_EXPORT GType
-register_rb_plugin (GTypeModule *module);
+G_MODULE_EXPORT void peas_register_types (PeasObjectModule *module);
 
 static void
 rb_spotify_plugin_init (RBSpotifyPlugin *plugin);
 static void
 rb_spotify_plugin_finalize (GObject *object);
-static void
-impl_activate (RBPlugin *plugin, RBShell *shell);
-static void
-impl_deactivate (RBPlugin *plugin, RBShell *shell);
 static GtkWidget*
-impl_create_configure_dialog (RBPlugin *plugin);
+impl_create_configure_widget (PeasGtkConfigurable *plugin);
+#if 0
 RB_PLUGIN_REGISTER(RBSpotifyPlugin, rb_spotify_plugin)
+#endif
+
+#if 0
 #define RB_SPOTIFY_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), RBSPOTIFYPLUGIN_TYPE, RBSpotifyPluginPrivate))
+#endif
 
-static void
-rb_spotify_plugin_class_init (RBSpotifyPluginClass *klass)
+#define RB_SPOTIFY_PLUGIN_GET_PRIVATE(object) ((RBSpotifyPlugin*)object)->privyou
+
+RB_DEFINE_PLUGIN(RB_TYPE_SPOTIFY_PLUGIN, RBSpotifyPlugin, rb_spotify_plugin, (G_IMPLEMENT_INTERFACE_DYNAMIC (PEAS_GTK_TYPE_CONFIGURABLE,
+						peas_gtk_configurable_iface_init)))
+
+G_MODULE_EXPORT void
+peas_register_types (PeasObjectModule *module)
 {
+#if 0
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  RBPluginClass *plugin_class = RB_PLUGIN_CLASS (klass);
-
   object_class->finalize = rb_spotify_plugin_finalize;
-
-  plugin_class->activate = impl_activate;
-  plugin_class->deactivate = impl_deactivate;
-  plugin_class->create_configure_dialog = impl_create_configure_dialog;
-
-  g_type_class_add_private (object_class, sizeof(RBSpotifyPluginPrivate));
+#endif
+//  RBSpotifyPluginClass *klass = RB_SPOTIFY_PLUGIN_GET_CLASS(module);
+  rb_spotify_plugin_register_type(G_TYPE_MODULE(module));
+  peas_object_module_register_extension_type(module, PEAS_TYPE_ACTIVATABLE, RB_TYPE_SPOTIFY_PLUGIN);
+	peas_object_module_register_extension_type (module, PEAS_GTK_TYPE_CONFIGURABLE, RB_TYPE_SPOTIFY_PLUGIN);
+  //g_type_class_add_private (klass, sizeof(RBSpotifyPluginPrivate));
 }
 
 static void
 rb_spotify_plugin_init (RBSpotifyPlugin *plugin)
 {
-  plugin->priv = RB_SPOTIFY_PLUGIN_GET_PRIVATE (plugin);
-
-  rb_debug ("RBSpotifyPlugin initialising");
+  //plugin->privyou = RB_SPOTIFY_PLUGIN_GET_PRIVATE (plugin);
+  plugin->privyou = g_new0(RBSpotifyPluginPrivate, 1);
+  plugin->privyou->gconf = gconf_client_get_default();
+  g_message ("=*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*++*+*+*+*+*+*+*+*+*++*+*+*+*+*+*+*+*+*+*++*\nRBSpotifyPlugin initialising: %d", plugin);
 }
 
 static void
 rb_spotify_plugin_finalize (GObject *object)
 {
-  /*
-   RBSamplePlugin *plugin = RB_SAMPLE_PLUGIN (object);
-   */
   rb_debug ("RBSpotifyPlugin finalising");
 
+  #if 0
   G_OBJECT_CLASS (rb_spotify_plugin_parent_class)->finalize (object);
+  #endif
 }
 
 static void
-sp_connect (sp_session *session)
+peas_gtk_configurable_iface_init (PeasGtkConfigurableInterface *iface)
 {
-  char *username = eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
-  char *password = eel_gconf_get_string (CONF_SPOTIFY_PASSWORD);
+	iface->create_configure_widget = impl_create_configure_widget;
+}
+
+static void
+sp_connect (RBSpotifyPluginPrivate *priv)
+{
+  sp_session *session = priv->sess;
+  GConfClient *gconf = priv->gconf;
+  char *username = gconf_client_get_string (gconf, CONF_SPOTIFY_USERNAME, NULL);
+  char *password = gconf_client_get_string (gconf, CONF_SPOTIFY_PASSWORD, NULL);
   if (username == NULL || password == NULL)
   {
     rb_error_dialog (NULL, "Spotify Plugin", "Username and password not set.");
@@ -203,11 +229,11 @@ sp_connect (sp_session *session)
   if (sp_session_connectionstate (session) == SP_CONNECTION_STATE_LOGGED_IN)
     sp_session_logout (session);
 
-  sp_session_login (session, username, password);
+  sp_session_login (session, username, password, TRUE, NULL);
 }
 
 static void
-impl_activate (RBPlugin *plugin, RBShell *shell)
+impl_activate (PeasActivatable *plugin)
 {
   //	rb_error_dialog (NULL, _("Spotify Plugin"), "Spotify plugin activated, with shell %p", shell);
 
@@ -217,7 +243,9 @@ impl_activate (RBPlugin *plugin, RBShell *shell)
   RhythmDB *db;
   char *entry_type_name, *username, *password;
   int err;
-  RBSpotifyPluginPrivate *pprivate = RBSPOTIFYPLUGIN(plugin)->priv;
+  RBSpotifyPlugin *realplugin = (RBSpotifyPlugin*) plugin;
+  RBSpotifyPluginPrivate *pprivate = realplugin->privyou;
+  RBShell *shell;
 
   pthread_mutex_init (&g_notify_mutex, NULL);
   pthread_cond_init (&g_notify_cond, NULL);
@@ -236,10 +264,11 @@ impl_activate (RBPlugin *plugin, RBShell *shell)
     return;
   }
 
-  sp_connect (pprivate->sess);
+  sp_connect (pprivate);
 
   rbspotifysrc_set_plugin (plugin);
 
+  g_object_get (realplugin, "object", &shell, NULL);
   g_object_get (shell, "db", &db, NULL);
 
   type = g_object_new (RHYTHMDB_TYPE_ENTRY_TYPE,
@@ -261,8 +290,7 @@ impl_activate (RBPlugin *plugin, RBShell *shell)
           "entry-type", type,
           "shell", shell,
           "visibility", TRUE,
-          //					  "sorting-key", CONF_STATE_SORTING,
-      "plugin", RB_PLUGIN (plugin),
+      "plugin", realplugin,
       NULL));
 
   source->priv->sess = pprivate->sess;
@@ -272,31 +300,35 @@ impl_activate (RBPlugin *plugin, RBShell *shell)
   rb_shell_register_entry_type_for_source (shell, (RBSource*) source, type);
 
   RBDisplayPageGroup *group = rb_display_page_group_get_by_id ("stores");
+  //XXX: Potential problem here; compiler warnings
   rb_shell_append_display_page (shell, source, group);
   //	return source;
+//  if(shell != NULL)
+//    g_object_unref(shell);
 }
 
 static void
-impl_deactivate (RBPlugin *plugin, RBShell *shell)
+impl_deactivate (PeasActivatable *plugin)
 {
-  sp_session *session = RBSPOTIFYPLUGIN(plugin)->priv->sess;
+  sp_session *session = RBSPOTIFYPLUGIN(plugin)->privyou->sess;
   sp_session_logout (session);
   sp_session_release (session);
 }
 
 static void
-preferences_response_cb (GtkWidget *dialog, gint response, RBPlugin *plugin)
+preferences_response_cb (GtkWidget *dialog, gint response, PeasExtensionBase *plugin)
 {
   gtk_widget_hide (dialog);
-  sp_connect (RBSPOTIFYPLUGIN(plugin)->priv->sess);
+  sp_connect (RBSPOTIFYPLUGIN(plugin)->privyou);
 }
 
 void
 rb_spotify_username_entry_focus_out_event_cb (GtkWidget *widget,
                                               RBSpotifyPlugin *spotify)
 {
-  eel_gconf_set_string (CONF_SPOTIFY_USERNAME,
-                        gtk_entry_get_text (GTK_ENTRY (widget)));
+  GConfClient *gconf = spotify->privyou->gconf;
+  gconf_client_set_string (gconf, CONF_SPOTIFY_USERNAME,
+                        gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 }
 
 void
@@ -311,28 +343,27 @@ void
 rb_spotify_password_entry_focus_out_event_cb (GtkWidget *widget,
                                               RBSpotifyPlugin *spotify)
 {
-  eel_gconf_set_string (CONF_SPOTIFY_PASSWORD,
-                        gtk_entry_get_text (GTK_ENTRY (widget)));
+  GConfClient *gconf = spotify->privyou->gconf;
+  gconf_client_set_string (gconf, CONF_SPOTIFY_PASSWORD,
+                        gtk_entry_get_text (GTK_ENTRY (widget)), NULL);
 }
 
 /**
  knicked from audio scrobbler
  */
 static GtkWidget*
-impl_create_configure_dialog (RBPlugin *plugin)
+impl_create_configure_widget (PeasGtkConfigurable *plugin)
 {
-  RBSpotifyPluginPrivate *pprivate = RB_SPOTIFY_PLUGIN_GET_PRIVATE(plugin);
+  RBSpotifyPluginPrivate *pprivate = ((RBSpotifyPlugin*)plugin)->privyou;
+  GConfClient *gconf = pprivate->gconf;
 
-  if (pprivate->preferences == NULL)
+  char* t;
+  if (pprivate->config_widget == NULL)
   {
-    char* t;
-
-    if (pprivate->config_widget == NULL)
-    {
       GtkBuilder *xml;
       char *gladefile;
-
-      gladefile = rb_plugin_find_file (plugin, "spotify-prefs.ui");
+  //XXX: Compiler warnings
+      gladefile = rb_find_plugin_data_file (plugin, "spotify-prefs.ui");
       g_assert (gladefile != NULL);
 
       xml = rb_builder_load (gladefile, plugin);
@@ -350,13 +381,13 @@ impl_create_configure_dialog (RBPlugin *plugin)
 
       // g_object_unref (G_OBJECT (xml));
 
-    }
-
-    t = eel_gconf_get_string (CONF_SPOTIFY_USERNAME);
+  //XXX: Compiler warnings
+    t = gconf_client_get_string (gconf, CONF_SPOTIFY_USERNAME, NULL);
     gtk_entry_set_text (GTK_ENTRY (pprivate->username_entry), t ? t : "");
-    t = eel_gconf_get_string (CONF_SPOTIFY_PASSWORD);
+    t = gconf_client_get_string (gconf, CONF_SPOTIFY_PASSWORD, NULL);
     gtk_entry_set_text (GTK_ENTRY (pprivate->password_entry), t ? t : "");
 
+#if 0
     pprivate->preferences
         = gtk_dialog_new_with_buttons ("Spotify Preferences",
                                        NULL,
@@ -375,10 +406,11 @@ impl_create_configure_dialog (RBPlugin *plugin)
 
     gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area(GTK_DIALOG (pprivate->preferences))),
                        pprivate->config_widget);
+#endif
   }
 
-  gtk_widget_show_all (pprivate->preferences);
-  return pprivate->preferences;
+  //gtk_widget_show_all (pprivate->preferences);
+  return pprivate->config_widget;
 }
 
 void

@@ -105,7 +105,19 @@ void rbspotifysource_search(RBSource *source, RBSourceSearch *search, const char
 
      if (self == NULL || self->priv->sess == NULL || cur_text == NULL)
 	  return;
-     sp_search *s = sp_search_create(self->priv->sess, cur_text,           0,                100,               0,                100,            0,                 100,               rbspotify_search_complete_cb, self);
+     sp_search *s = sp_search_create(self->priv->sess, 
+cur_text, 
+0,           
+100,
+0,
+100,
+0,
+100,
+0,
+100,
+SP_SEARCH_STANDARD,
+rbspotify_search_complete_cb,
+self);
 
      //sp_radio_search_create(sp_session *session, unsigned int from_year, unsigned int to_year, sp_radio_genre genres, search_complete_cb *callback, void *userdata);
 

@@ -14,7 +14,7 @@ AC_PROG_CC
 LT_PREREQ([2.2])
 LT_INIT
 
-pkg_modules="rhythmbox libspotify"
+pkg_modules="rhythmbox libspotify libpeas-1.0 libpeas-gtk-1.0 gconf-2.0"
              
 PKG_CHECK_MODULES([DEPENDENCIES], [$pkg_modules])
 
@@ -27,6 +27,7 @@ AM_GLIB_GNU_GETTEXT
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
+data/Makefile
 ])
 
 AC_OUTPUT

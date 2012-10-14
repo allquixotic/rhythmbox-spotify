@@ -15,7 +15,10 @@
  */
 #include <rhythmbox/shell/rb-shell.h>
 #include <rhythmbox/sources/rb-browser-source.h>
-#include <rhythmbox/shell/rb-plugin.h>
+#include <rhythmbox/plugins/rb-plugin-macros.h>
+#include <gconf/gconf.h>
+#include <gconf/gconf-client.h>
+#include <libpeas-gtk/peas-gtk.h>
 
 
 G_BEGIN_DECLS
@@ -32,27 +35,34 @@ typedef struct
 {
      sp_session *sess;
      pthread_t notify_thread;
+
+  //libpeas gives us our own toplevel
+  #if 0
      GtkWidget *preferences;
+  #endif
      GtkWidget *config_widget;
 
      GtkWidget *username_entry;
      GtkWidget *username_label;
      GtkWidget *password_entry;
      GtkWidget *password_label;
+     GConfClient *gconf;
 } RBSpotifyPluginPrivate;
 
 typedef struct
 {
-     RBPlugin parent;
-     RBSpotifyPluginPrivate *priv;
+     PeasExtensionBase parent;
+     RBSpotifyPluginPrivate *privyou;
 } RBSpotifyPlugin;
 
 typedef struct
 {
-     RBPluginClass parent_class;
+     PeasExtensionBaseClass parent_class;
 } RBSpotifyPluginClass;
 
+#if 0 
 GType	rb_spotify_plugin_get_type		(void) G_GNUC_CONST;
+#endif
 
 G_END_DECLS
 

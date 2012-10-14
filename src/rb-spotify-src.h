@@ -32,11 +32,12 @@
 
 #include <glib.h>
 #include <gst/gstelement.h>
+#include <libpeas/peas.h>
 
 G_BEGIN_DECLS
 
 GType rbspotifysrc_get_type (void);
-void rbspotifysrc_set_plugin (RBPlugin *plugin);
+void rbspotifysrc_set_plugin (PeasExtensionBase *plugin);
 
 G_END_DECLS
 

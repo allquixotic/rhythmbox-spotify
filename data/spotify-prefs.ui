@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-requires gtk+ 3.0 -->
   <object class="GtkVBox" id="spotify_vbox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -64,20 +64,22 @@
                       </object>
                       <packing>
                         <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkEntry" id="username_entry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="invisible_char">●</property>
+                        <property name="invisible_char_set">True</property>
                         <signal name="activate" handler="rb_spotify_username_entry_activate_cb" swapped="no"/>
                         <signal name="focus-out-event" handler="rb_spotify_username_entry_focus_out_event_cb" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="y_options"></property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -85,6 +87,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="visibility">False</property>
+                        <property name="invisible_char">●</property>
+                        <property name="invisible_char_set">True</property>
                         <signal name="focus-out-event" handler="rb_spotify_password_entry_focus_out_event_cb" swapped="no"/>
                       </object>
                       <packing>
@@ -92,7 +96,7 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="y_options"></property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                     <child>
@@ -108,7 +112,7 @@
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
                         <property name="x_options">GTK_FILL</property>
-                        <property name="y_options"></property>
+                        <property name="y_options"/>
                       </packing>
                     </child>
                   </object>
@@ -142,8 +146,9 @@
                         <property name="label">Get a Pro account to use with Rhythmbox</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
+                        <property name="receives_default">True</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="relief">none</property>
                         <property name="uri">http://www.spotify.com</property>
                       </object>
                       <packing>
