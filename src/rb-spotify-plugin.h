@@ -52,13 +52,16 @@ typedef struct
 typedef struct
 {
      PeasExtensionBase parent;
-     RBSpotifyPluginPrivate *privyou;
+     gpointer do_not_use;
 } RBSpotifyPlugin;
 
 typedef struct
 {
      PeasExtensionBaseClass parent_class;
 } RBSpotifyPluginClass;
+
+RBSpotifyPluginPrivate *get_priv();
+void printthreadname();
 
 #if 0 
 GType	rb_spotify_plugin_get_type		(void) G_GNUC_CONST;

@@ -1,4 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-SUBDIRS=src \
+SUBDIRS= po src \
 	data
+
+install-root:
+	beesu make install

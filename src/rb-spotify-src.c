@@ -239,7 +239,7 @@ rbspotifysrc_init (RBSpotifySrc *src, RBSpotifySrcClass *klass)
 		);
 	src->uri = NULL;
 
-	g_object_set (G_OBJECT (src), "session", g_spotify_plugin->privyou->sess, NULL);
+	g_object_set (G_OBJECT (src), "session", get_priv()->sess, NULL);
 }
 
 static void

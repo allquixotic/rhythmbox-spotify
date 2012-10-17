@@ -58,6 +58,8 @@ void rbspotify_search_complete_cb (sp_search *result, void *userdata)
      RBSpotifySource *self = RBSPOTIFYSOURCE (userdata);
      fprintf(stderr, "Result callback\n");
      if (!result) return;
+
+     g_message("Search object in callback: %p\n", result);
      
      if (result && SP_ERROR_OK == sp_search_error(result))
      {
@@ -100,26 +102,20 @@ void rbspotify_search_complete_cb (sp_search *result, void *userdata)
 
 void rbspotifysource_search(RBSource *source, RBSourceSearch *search, const char *cur_text, const char *new_text)
 {
-     fprintf(stderr, "cur: %s new: %s\n", cur_text, new_text);
+  g_message("In rbspotifysource_search()");
+  printthreadname();
+  if(new_text != NULL && g_utf8_strlen(new_text, 10) > 2)
+  {
+     fprintf(stderr, "*Searching!* Current: %s // New: %s\n", cur_text, new_text);
      RBSpotifySource *self = RBSPOTIFYSOURCE (source);
 
      if (self == NULL || self->priv->sess == NULL || cur_text == NULL)
-	  return;
-     sp_search *s = sp_search_create(self->priv->sess, 
-cur_text, 
-0,           
-100,
-0,
-100,
-0,
-100,
-0,
-100,
-SP_SEARCH_STANDARD,
-rbspotify_search_complete_cb,
-self);
+	      return;
 
+      g_message("search session: %p\n", self->priv->sess);
+     sp_search *s = sp_search_create(self->priv->sess, g_strdup(new_text), 0, 100, 0, 100, 0, 100, 0, 100, SP_SEARCH_STANDARD, rbspotify_search_complete_cb, self);
+     g_message("Search object: %p\n", s);
      //sp_radio_search_create(sp_session *session, unsigned int from_year, unsigned int to_year, sp_radio_genre genres, search_complete_cb *callback, void *userdata);
-
+  }
 }
 

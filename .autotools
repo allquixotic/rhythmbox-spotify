@@ -11,18 +11,18 @@
 <option id="host" value=""/>
 <option id="build" value=""/>
 <option id="target" value=""/>
-<option id="prefix" value=""/>
+<option id="prefix" value="/usr"/>
 <option id="exec-prefix" value=""/>
-<option id="libdir" value=""/>
+<option id="libdir" value="/usr/lib64"/>
 <option id="bindir" value=""/>
 <option id="sbindir" value=""/>
 <option id="includedir" value=""/>
 <option id="datadir" value=""/>
-<option id="sysconfdir" value=""/>
+<option id="sysconfdir" value="/etc"/>
 <option id="infodir" value=""/>
 <option id="mandir" value=""/>
 <option id="srcdir" value=""/>
-<option id="localstatedir" value=""/>
+<option id="localstatedir" value="/var"/>
 <option id="sharedstatedir" value=""/>
 <option id="libexecdir" value=""/>
 <option id="oldincludedir" value=""/>
@@ -30,6 +30,11 @@
 <option id="program-suffix" value=""/>
 <option id="program-transform-name" value=""/>
 <option id="enable-maintainer-mode" value="false"/>
+<flag id="CFLAGS">
+<flagvalue id="cflags-debug" value="true"/>
+<flagvalue id="cflags-gprof" value="false"/>
+<flagvalue id="cflags-gcov" value="false"/>
+</flag>
 <option id="user" value=""/>
 <option id="autogen" value="autogen.sh"/>
 <option id="autogenOpts" value=""/>

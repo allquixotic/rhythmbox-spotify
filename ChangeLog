@@ -1,0 +1,6 @@
+2012-10-16  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* m4/iconv.m4: Upgrade to gettext-0.18.1.
+	* Makefile.am (SUBDIRS): Add po.
+	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
+
