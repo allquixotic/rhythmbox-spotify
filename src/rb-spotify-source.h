@@ -30,25 +30,28 @@ G_BEGIN_DECLS
 #define IS_RBSPOTIFYSOURCE_CLASS(klass)       (G_TYPE_CHECK_CLASS_TYPE ((klass),  RBSPOTIFYSOURCE_TYPE))
 #define RBSPOTIFYSOURCE_GET_CLASS(obj)        (G_TYPE_INSTANCE_GET_CLASS ((obj),  RBSPOTIFYSOURCE_TYPE, RBSpotifySourceClass))
 
-typedef struct _RBSpotifySourcePrivate {
-     sp_session *sess;
-     RhythmDB *db;
-     RhythmDBEntryType *type;
+typedef struct _RBSpotifySourcePrivate
+{
+	sp_session *sess;
+	RhythmDB *db;
+	RhythmDBEntryType *type;
 } RBSpotifySourcePrivate;
 
-typedef struct {
+typedef struct
+{
 	RBBrowserSource parent;
 
 	RBSpotifySourcePrivate *priv;
 } RBSpotifySource;
 
-typedef struct {
+typedef struct
+{
 	RBBrowserSourceClass parent;
 } RBSpotifySourceClass;
 
-
 /* used by MAMAN_TYPE_BAR */
-GType rbspotifysource_get_type (void);
+GType
+rbspotifysource_get_type(void);
 
 /*
  * Method definitions.

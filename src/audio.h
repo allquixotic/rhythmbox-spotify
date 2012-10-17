@@ -31,26 +31,27 @@
 #include <stdint.h>
 #include <sys/queue.h>
 
-
 #define RING_QUEUE_SIZE (44100*5)
 
-typedef struct audio_fifo {
-     int16_t samples[RING_QUEUE_SIZE];
-     int nsamples;
-     uint32_t start;
-     uint32_t end;
-     int rate;
-     int channels;
-     pthread_mutex_t mutex;
-     pthread_cond_t cond;
-     pthread_mutex_t cond_mutex;
+typedef struct audio_fifo
+{
+	int16_t samples[RING_QUEUE_SIZE];
+	int nsamples;
+	uint32_t start;
+	uint32_t end;
+	int rate;
+	int channels;
+	pthread_mutex_t mutex;
+	pthread_cond_t cond;
+	pthread_mutex_t cond_mutex;
 } audio_fifo_t;
-
 
 extern audio_fifo_t g_audio_fifo;
 
 /* --- Functions --- */
-extern void audio_fifo_init(audio_fifo_t *af);
-extern void audio_fifo_flush(audio_fifo_t *af);
+extern void
+audio_fifo_init(audio_fifo_t *af);
+extern void
+audio_fifo_flush(audio_fifo_t *af);
 
 #endif /* _JUKEBOX_AUDIO_H_ */

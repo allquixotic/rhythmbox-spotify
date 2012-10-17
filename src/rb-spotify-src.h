@@ -36,8 +36,10 @@
 
 G_BEGIN_DECLS
 
-GType rbspotifysrc_get_type (void);
-void rbspotifysrc_set_plugin (PeasExtensionBase *plugin);
+GType
+rbspotifysrc_get_type(void);
+void
+rbspotifysrc_set_plugin(PeasExtensionBase *plugin);
 
 G_END_DECLS
 
