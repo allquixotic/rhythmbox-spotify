@@ -140,11 +140,11 @@ void printthreadname()
 /**
  * This callback is called for log messages.
  *
- * @sa sp_session_callbacks#log_debug
+ * @sa sp_session_callbacks#log_message
  */
-static void log_debug(sp_session *session, const char *data)
+static void log_message(sp_session *session, const char *data)
 {
-	g_debug( "log_debug: %s\n", data);
+	g_debug( "log_message: %s\n", data);
 }
 
 static sp_session_callbacks session_callbacks =
@@ -152,7 +152,7 @@ static sp_session_callbacks session_callbacks =
 		.notify_main_thread = &spcb_notify_main_thread, .music_delivery =
 				&spcb_music_delivery,
 		.metadata_updated = &spcb_metadata_updated, .play_token_lost =
-				&spcb_play_token_lost, .log_debug = &log_debug,
+				&spcb_play_token_lost, .log_message = &log_message,
 		.connection_error = &spcb_connection_error, .message_to_user =
 				&spcb_message_to_user,
 

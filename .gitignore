@@ -18,3 +18,7 @@ config.h
 *.lo*
 *.o
 src/spotify.plugin
+po/POTFILES
+po/stamp-it
+po/.intltool-merge-cache
+libtool
